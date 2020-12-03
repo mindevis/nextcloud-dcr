@@ -7,7 +7,7 @@ echo "Install EPEL Repository"
 yum install epel-release -y
 
 echo "Install needed software"
-yum install vim pwgen htop lsof strace psmisc ncdu net-tools mc -y
+yum install dialog vim pwgen htop lsof strace psmisc ncdu net-tools mc -y
 
 echo "Download and Install Docker Engine"
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -50,7 +50,7 @@ echo "MYSQL_HOST=nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_ADMIN_USER=hoster_nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_ADMIN_PASSWORD=hoster_nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_DATA_DIR=/var/www/html/data" >> .nextcloud.env
-echo "NEXTCLOUD_TRUSTED_DOMAINS=localhost "$(hostname -i) $(hostname -f) >> .nextcloud.env
+echo "NEXTCLOUD_TRUSTED_DOMAINS="$(hostname -i) $(hostname -f) >> .nextcloud.env
 
 echo "Pulling mariadb and nextcloud images"
 docker pull mariadb:latest
