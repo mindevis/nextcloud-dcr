@@ -70,6 +70,7 @@ then
     docker stop nextcloud-node
     echo "Delete nextcloud-node container"
     docker rm nextcloud-node
+fi
 
 echo "Run mariadb-node"
 docker run --name mariadb-node --restart always -v /etc/mysql:/etc/mysql/conf.d -v /var/lib/mysql:/var/lib/mysql --env-file .mariadb.env -d mariadb:latest
