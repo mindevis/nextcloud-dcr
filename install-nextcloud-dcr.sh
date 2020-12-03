@@ -7,7 +7,7 @@ echo "Install EPEL Repository"
 yum install epel-release -y
 
 echo "Install needed software"
-yum install vim pwgen htop lsof strace ncdu net-tools mc -y
+yum install vim pwgen htop lsof strace psmisc ncdu net-tools mc -y
 
 echo "Download and Install Docker Engine"
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -33,10 +33,23 @@ else
     touch .mariadb.env
 fi
 
+echo "Create env file for nextcloud"
+if [ -f ".nextcloud.env" ]; then
+    rm -f .nextcloud.env
+else
+    touch .nextcloud.env
+fi
+
 echo "MYSQL_ROOT_PASSWORD="$(pwgen 25 1) > .mariadb.env
 echo "MYSQL_USER=user_"$(pwgen 5 1) >> .mariadb.env
 echo "MYSQL_PASSWORD="$(pwgen 15 1) >> .mariadb.env
 echo "MYSQL_DATABASE=nextcloud_prod" >> .mariadb.env
+
+awk 'NR>=2 && NR<=4' .mariadb.env > .nextcloud.env
+echo "MYSQL_HOST=nextcloud" >> .nextcloud.env
+echo "NEXTCLOUD_ADMIN_USER=hoster_nextcloud" >> .nextcloud.env
+echo "NEXTCLOUD_ADMIN_PASSWORD=hoster_nextcloud" >> .nextcloud.env
+echo "NEXTCLOUD_DATA_DIR=/var/www/html/data" >> .nextcloud.env
 
 echo "Pulling mariadb and nextcloud images"
 docker pull mariadb:latest
@@ -62,4 +75,4 @@ echo "Run mariadb-node"
 docker run --name mariadb-node --restart always -v /etc/mysql:/etc/mysql/conf.d -v /var/lib/mysql:/var/lib/mysql --env-file .mariadb.env -d mariadb:latest
 
 echo "Run nextcloud-node"
-docker run --name nextcloud-node --restart always --link mariadb-node:nextcloud -v /var/www/html:/var/www/html -p 80:80 -d nextcloud:latest
+docker run --name nextcloud-node --restart always --link mariadb-node:nextcloud -v /var/www/html:/var/www/html --env-file .nextcloud.env -p 80:80 -d nextcloud:latest
