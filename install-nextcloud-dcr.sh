@@ -3,11 +3,8 @@
 echo "Check for updates"
 yum update -y
 
-echo "Install EPEL Repository"
-yum install epel-release -y
-
 echo "Install needed software"
-yum install dialog vim pwgen htop lsof strace psmisc ncdu net-tools mc -y
+yum install epel-release vim pwgen htop lsof strace psmisc ncdu net-tools mc -y
 
 echo "Download and Install Docker Engine"
 curl -fsSL https://get.docker.com -o get-docker.sh

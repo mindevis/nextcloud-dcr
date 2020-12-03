@@ -1,19 +1,27 @@
 #!/bin/bash
 
-function isinstalled {
-  if yum list installed "whiptail" >/dev/null 2>&1; then
-    true
-  else
-    false
-  fi
-}
+function do_main_menu ()
+{
+    SELECTION=$(whiptail --title "Меню скрипта" --menu "" 15 70 8 \
+    "1" "Установить Nextcloud Docker" \
+    "2" "Установить PHPMyAdmin" 3>&1 1>&2 2>&3)
 
-OPTION=$(whiptail --title "Меню скрипта" --menu "Опция" 15 60 4 \
-"1" "Установить Nextcloud Docker"  3>&1 1>&2 2>&3)
- 
-exitstatus=$?
-if [ $exitstatus = 0 ]; then
-    echo "Your chosen option:" $OPTION
-else
-    echo "You chose Cancel."
-fi
+    if [ "$SELECTION" == '1' ]; then
+        do_install_nextcloud
+    fi
+}
+function do_install_nextcloud ()
+{
+    SELECTION1=$(whiptail --title "Меню скрипта" --menu "" 15 70 8 \
+    "1 " "Nextcloud: MariaDB + Apache2 (Only HTTP)" \
+    "2 " "Nextcloud: Nginx + MariaDB + Apache2 + Let's Encrypt (Only HTTPS)" 3>&1 1>&2 2>&3)
+
+    if [ "$SELECTION1" == '1' ]; then
+        do_install_nextcloud_ma
+    fi
+}
+function do_install_nextcloud_ma ()
+{
+    yum update -y
+}
+do_main_menu
