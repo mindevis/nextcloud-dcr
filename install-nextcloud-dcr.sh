@@ -50,6 +50,7 @@ echo "MYSQL_HOST=nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_ADMIN_USER=hoster_nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_ADMIN_PASSWORD=hoster_nextcloud" >> .nextcloud.env
 echo "NEXTCLOUD_DATA_DIR=/var/www/html/data" >> .nextcloud.env
+echo "NEXTCLOUD_TRUSTED_DOMAINS=localhost "$(hostname -i) $(hostname -f) >> .nextcloud.env
 
 echo "Pulling mariadb and nextcloud images"
 docker pull mariadb:latest
