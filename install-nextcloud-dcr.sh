@@ -7,7 +7,7 @@ echo "Install EPEL Repository"
 yum install epel-release -y
 
 echo "Install needed software"
-yum install pwgen htop lsof strace ncdu net-tools mc -y
+yum install vim pwgen htop lsof strace ncdu net-tools mc -y
 
 echo "Download and Install Docker Engine"
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -42,11 +42,21 @@ echo "Pulling mariadb and nextcloud images"
 docker pull mariadb:latest
 docker pull nextcloud:latest
 
-echo "Stop and delete exist containers"
-docker stop mariadb-node
-docker rm mariadb-node
-docker stop nextcloud-node
-docker rm nextcloud-node
+echo "Check containers, if exist delete containers"
+if (( $(docker ps --filter name=mariadb-node | wc -l) != 1))
+then
+    echo "Stop mariadb-node container"
+    docker stop mariadb-node
+    echo "Delete mariadb-node container"
+    docker rm mariadb-node
+fi
+
+if (( $(docker ps --filter name=nextcloud-node | wc -l) != 1))
+then
+    echo "Stop nextcloud-node container"
+    docker stop nextcloud-node
+    echo "Delete nextcloud-node container"
+    docker rm nextcloud-node
 
 echo "Run mariadb-node"
 docker run --name mariadb-node --restart always -v /etc/mysql:/etc/mysql/conf.d -v /var/lib/mysql:/var/lib/mysql --env-file .mariadb.env -d mariadb:latest
